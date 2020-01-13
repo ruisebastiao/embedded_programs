@@ -6,6 +6,8 @@
 package javafxfxml;
 
 
+import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,6 +15,7 @@ import javafx.stage.Stage;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.PointLight;
@@ -24,6 +27,7 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
  
 
 /**
@@ -35,15 +39,21 @@ public class JavaFXFXML extends Application {
  
     private PerspectiveCamera addCamera(Scene scene) {
         PerspectiveCamera perspectiveCamera = new PerspectiveCamera(false);
+        perspectiveCamera.setTranslateZ(-1000);
         scene.setCamera(perspectiveCamera);
         return perspectiveCamera;
     }
     
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
         
-
-        primaryStage.setTitle("SphereAndBox");
+        Parent root=FXMLLoader.load(getClass().getResource("mainFXML.fxml"));	
+        Scene scene = new Scene(root);	
+        stage.setTitle("Teste Title");	   
+        stage.setScene(scene);	
+        //stage.show();
+        
+        //primaryStage.setTitle("SphereAndBox");
  
         final PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setSpecularColor(Color.ORANGE);
@@ -71,9 +81,9 @@ public class JavaFXFXML extends Application {
         parent.setRotationAxis(Rotate.Y_AXIS);
  
  
-        final Group root = new Group(parent);
+        final Group root3D = new Group(parent);
  
-        final Scene scene = new Scene(root, 480, 320, true);
+       // final Scene scene = new Scene(root, 800, 480, true);
  
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override public void handle(MouseEvent event) {
@@ -94,11 +104,19 @@ public class JavaFXFXML extends Application {
         pointLight.setTranslateY(-10);
         pointLight.setTranslateZ(-100);
  
-        root.getChildren().add(pointLight);
+        root3D.getChildren().add(pointLight);
  
+        RotateTransition rt = new RotateTransition(Duration.millis(2000), root);
+        rt.setAxis(Rotate.Y_AXIS);
+        rt.setByAngle(180);
+        rt.setCycleCount(Timeline.INDEFINITE);
+        rt.setAutoReverse(true);
+ 
+        rt.play();
+     
         addCamera(scene);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+       // primaryStage.setScene(scene);
+        stage.show();
         
     }
     
